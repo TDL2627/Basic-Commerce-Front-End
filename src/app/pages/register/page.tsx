@@ -88,7 +88,7 @@ export default function Register() {
           SIGN UP
         </button>
       </form>
-      <Link className="text-black text-center text-sm underline" href="/login">
+      <Link className="text-black text-center text-sm underline" href="/pages/login">
         Login
       </Link>
       <p className="text-gray-400 text-center text-sm">

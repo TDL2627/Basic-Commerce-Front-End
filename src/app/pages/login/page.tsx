@@ -52,7 +52,7 @@ export default function Login() {
       </form>
       <Link
         className="text-black  text-center text-sm underline"
-        href="/register"
+        href="/pages/register"
       >
         Register
       </Link>
