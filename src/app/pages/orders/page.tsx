@@ -4,7 +4,8 @@ import axios from "axios";
 export default function Orders() {
   const [orders, setOrders] = useState<any[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -12,7 +13,10 @@ export default function Orders() {
           "https://basic-commerce-back-end.vercel.app/orders"
         );
         setOrders(response.data);
+        setLoading(false)
       } catch (error) {
+        setLoading(false)
+
         console.error("Error fetching data:", error);
       }
     };
@@ -25,6 +29,11 @@ export default function Orders() {
   const handlePagination = (page: number) => {
     setCurrentPage(page);
   };
+  const filteredOrders = orders
+    ? orders.filter((order: any) =>
+        order.id.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
   const startIndex = (currentPage - 1) * 6;
   const endIndex = startIndex + 6;
@@ -33,11 +42,17 @@ export default function Orders() {
     <div className="w-full min-h-screen flex flex-col justify-center items-center bg-black text-white">
       <div className="fixed top-0 py-2 gap-2 bg-black w-screen flex flex-col justify-center items-center z-50">
         <h1 className="text-5xl">Orders</h1>
+        <input
+          type="text"
+          placeholder="Search by Order ID"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="bg-gray-800 text-white py-2 px-4 rounded"
+        />
       </div>
-      <h1 className="text-5xl">Orders</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8 overflow-y-auto z-0 mx-4 lg:max-h-[500px] py-20 lg:py-5">
-        {orders ? (
-          orders
+        {filteredOrders.length > 0 ? (
+          filteredOrders
             .slice(startIndex, endIndex)
             .map((order: any, index: number) => (
               <div key={index} className="p-4 bg-gray-800 rounded-lg">
@@ -66,7 +81,16 @@ export default function Orders() {
               </div>
             ))
         ) : (
-          <p>Loading...</p>
+          <>
+            {loading == true ? (
+              <>Loading</>
+            ) : (
+              <>
+                {" "}
+                <p>No orders found.</p>
+              </>
+            )}
+          </>
         )}
       </div>
 
