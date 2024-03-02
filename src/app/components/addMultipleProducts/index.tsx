@@ -63,7 +63,7 @@ export default function BulkProductAdd(props: any) {
   return (
     <div className="w-full min-h-screen flex flex-col justify-center items-center bg-black text-white">
       <div className="fixed lg:top-0 top-16 bg-black w-screen text-center py-4">
-        <h1 className="lg:text-5xl text-2xl mb-4">Add Multiple Products</h1>
+        <h1 className="lg:text-5xl text-2xl mb-4">Add Products</h1>
       </div>
       <div className="overflow-y-scroll max-h-[400px]">
         {" "}

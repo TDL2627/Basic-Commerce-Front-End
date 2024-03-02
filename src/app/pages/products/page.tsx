@@ -84,9 +84,12 @@ export default function Products() {
         );
       } else {
         console.log("Selected product IDs to delete:", selectedProducts);
-        await axios.post("https://basic-commerce-back-end.vercel.app/remove-products", {
-          products: selectedProducts,
-        });
+        await axios.post(
+          "https://basic-commerce-back-end.vercel.app/remove-products",
+          {
+            products: selectedProducts,
+          }
+        );
       }
       window.location.reload();
       setSelectedProducts([]);
@@ -98,30 +101,32 @@ export default function Products() {
       <div className="w-full min-h-screen flex flex-col justify-center items-center bg-black text-white relative">
         <div className="fixed top-0 py-2 gap-2 bg-black w-screen flex flex-col justify-center items-center z-50">
           <h1 className="text-5xl">Products</h1>
-          <input
-            type="text"
-            placeholder="Search Name"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="bg-gray-800 text-white py-2 px-4 rounded"
-          />
-          <div className="ml-4">
-            <button
-              onClick={() => {
-                setShowModal("multi");
-              }}
-              className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded"
-            >
-              Add Products
-            </button>
-            {selectedProducts.length > 0 && (
+          <div className="lg:flex">
+            <input
+              type="text"
+              placeholder="Search Name"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="bg-gray-800 text-white py-2 px-4 rounded"
+            />
+            <div className="ml-4">
               <button
-                onClick={handleDelete}
-                className="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded ml-4"
+                onClick={() => {
+                  setShowModal("multi");
+                }}
+                className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded"
               >
-                Delete Selected
+                Add Products
               </button>
-            )}
+              {selectedProducts.length > 0 && (
+                <button
+                  onClick={handleDelete}
+                  className="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded ml-4"
+                >
+                  Delete Selected
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
