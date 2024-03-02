@@ -102,7 +102,7 @@ export default function Products() {
           )}
         </div>
 
-        <div className="flex mt-4">{renderPagination()}</div>
+        <div className="flex my-4">{renderPagination()}</div>
       </div>
       {showModal !== "" && (
         <div className="fixed  inset-0  bg-black flex justify-center  z-50">
