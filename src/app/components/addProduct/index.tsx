@@ -25,6 +25,7 @@ export default function AddProduct(props: any) {
         price: "",
         description: "",
       });
+      window.location.reload();
       closeModal();
     } catch (error) {
       console.error("Error adding product:", error);
