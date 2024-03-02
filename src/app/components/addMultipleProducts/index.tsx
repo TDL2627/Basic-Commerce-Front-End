@@ -1,14 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function BulkProductAdd(props: any) {
   const { closeModal } = props;
   const [products, setProducts] = useState<any>([]);
-  const [formData, setFormData] = useState<any>({
-    name: "",
-    price: "",
-    description: "",
-  });
+  const [canUpload, setCanUpload] = useState(false);
 
   const handleChange = (e: any, index: any) => {
     const { name, value } = e.target;
@@ -29,9 +25,18 @@ export default function BulkProductAdd(props: any) {
 
   const handleUpload = async () => {
     try {
-      await axios.post("https://basic-commerce-back-end.vercel.app/products", {
-        products,
-      });
+
+      if(products.length == 1){
+        await axios.post(
+          "https://basic-commerce-back-end.vercel.app/product",
+          products[0]
+        );
+      }else{
+        await axios.post("https://basic-commerce-back-end.vercel.app/products", {
+          products,
+        });
+      }
+      
       window.location.reload();
       closeModal();
 
@@ -40,12 +45,25 @@ export default function BulkProductAdd(props: any) {
       console.error("Error adding bulk products:", error);
     }
   };
-
+  const validateProducts = () => {
+    for (const product of products) {
+      if (!product.name || !product.price || !product.description) {
+        return false;
+      }
+    }
+    return true;
+  };
+  useEffect(() => {
+    if (products.length !== 0 && validateProducts()) {
+      setCanUpload(true);
+    } else {
+      setCanUpload(false);
+    }
+  }, [products]);
   return (
     <div className="w-full min-h-screen flex flex-col justify-center items-center bg-black text-white">
       <div className="fixed lg:top-0 top-16 bg-black w-screen text-center py-4">
-      <h1 className="lg:text-5xl text-2xl mb-4">Add Multiple Products</h1>
-
+        <h1 className="lg:text-5xl text-2xl mb-4">Add Multiple Products</h1>
       </div>
       <div className="overflow-y-scroll max-h-[400px]">
         {" "}
@@ -98,10 +116,10 @@ export default function BulkProductAdd(props: any) {
           Add Another Product
         </button>
         <button
-          disabled={products.length == 0}
+          disabled={canUpload == false}
           onClick={handleUpload}
           className={`bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded  ${
-            products.length == 0 && "cursor-not-allowed"
+            canUpload == false ? "cursor-not-allowed" : "cursor-pointer"
           }`}
         >
           Upload Products
