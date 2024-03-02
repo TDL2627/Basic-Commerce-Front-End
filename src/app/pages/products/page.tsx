@@ -9,6 +9,8 @@ export default function Products() {
   const [products, setProducts] = useState<any[] | null>(null);
   const [showModal, setShowModal] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,7 +19,10 @@ export default function Products() {
           "https://basic-commerce-back-end.vercel.app/products"
         );
         setProducts(response.data);
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
+
         console.error("Error fetching data:", error);
       }
     };
@@ -51,16 +56,26 @@ export default function Products() {
     }
     return pages;
   };
-
+  const filteredProducts = products
+    ? products.filter((product: any) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
   const startIndex = (currentPage - 1) * 6;
   const endIndex = startIndex + 6;
-
 
   return (
     <>
       <div className="w-full min-h-screen flex flex-col justify-center items-center bg-black text-white relative">
         <div className="fixed top-0 py-2 gap-2 bg-black w-screen flex flex-col justify-center items-center z-50">
           <h1 className="text-5xl">Products</h1>
+          <input
+            type="text"
+            placeholder="Search Name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="bg-gray-800 text-white py-2 px-4 rounded"
+          />
           <div className="ml-4">
             <button
               onClick={() => {
@@ -74,8 +89,8 @@ export default function Products() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8 overflow-y-auto z-0 mx-4 lg:max-h-[500px] py-20 lg:py-5">
-          {products ? (
-            products
+          {filteredProducts.length > 0 ? (
+            filteredProducts
               .slice(startIndex, endIndex)
               .map((product: any, index: number) => (
                 <Link
@@ -98,7 +113,16 @@ export default function Products() {
                 </Link>
               ))
           ) : (
-            <p>Loading...</p>
+            <>
+              {loading == true ? (
+                <>Loading...</>
+              ) : (
+                <>
+                  {" "}
+                  <p>No products found.</p>
+                </>
+              )}
+            </>
           )}
         </div>
 

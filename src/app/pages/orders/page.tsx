@@ -83,7 +83,7 @@ export default function Orders() {
         ) : (
           <>
             {loading == true ? (
-              <>Loading</>
+              <>Loading...</>
             ) : (
               <>
                 {" "}
