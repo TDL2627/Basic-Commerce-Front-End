@@ -11,6 +11,7 @@ export default function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +65,34 @@ export default function Products() {
   const startIndex = (currentPage - 1) * 6;
   const endIndex = startIndex + 6;
 
+  const handleCheckboxChange = (productId: string) => {
+    if (selectedProducts.includes(productId)) {
+      setSelectedProducts(selectedProducts.filter((id) => id !== productId));
+    } else {
+      setSelectedProducts([...selectedProducts, productId]);
+    }
+  };
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete the selected products?"
+    );
+    if (confirmDelete) {
+      if (selectedProducts.length == 1) {
+        await axios.delete(
+          `https://basic-commerce-back-end.vercel.app/product/${selectedProducts[0]}`
+        );
+      } else {
+        console.log("Selected product IDs to delete:", selectedProducts);
+        await axios.post("https://basic-commerce-back-end.vercel.app/remove-products", {
+          products: selectedProducts,
+        });
+      }
+      window.location.reload();
+      setSelectedProducts([]);
+    }
+  };
+
   return (
     <>
       <div className="w-full min-h-screen flex flex-col justify-center items-center bg-black text-white relative">
@@ -85,6 +114,14 @@ export default function Products() {
             >
               Add Products
             </button>
+            {selectedProducts.length > 0 && (
+              <button
+                onClick={handleDelete}
+                className="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded ml-4"
+              >
+                Delete Selected
+              </button>
+            )}
           </div>
         </div>
 
@@ -93,24 +130,32 @@ export default function Products() {
             filteredProducts
               .slice(startIndex, endIndex)
               .map((product: any, index: number) => (
-                <Link
-                  href={`/pages/product/${product.id}`}
+                <div
                   key={index}
-                  className="p-4 bg-gray-800 rounded-lg"
+                  className="p-4 bg-gray-800 rounded-lg pt-8 relative"
                 >
-                  <p>
-                    <strong>Product ID:</strong> {product.id}
-                  </p>
-                  <p>
-                    <strong>Name:</strong> {product.name}
-                  </p>
-                  <p>
-                    <strong>Price:</strong> R{product.price}
-                  </p>
-                  <p>
-                    <strong>Description:</strong> {product.description}
-                  </p>
-                </Link>
+                  <input
+                    type="checkbox"
+                    onChange={() => handleCheckboxChange(product.id)}
+                    checked={selectedProducts.includes(product.id)}
+                    className="h-5 absolute top-2 right-2 rounded-full"
+                  />
+
+                  <Link href={`/pages/product/${product.id}`} className="">
+                    <p>
+                      <strong>Product ID:</strong> {product.id}
+                    </p>
+                    <p>
+                      <strong>Name:</strong> {product.name}
+                    </p>
+                    <p>
+                      <strong>Price:</strong> R{product.price}
+                    </p>
+                    <p>
+                      <strong>Description:</strong> {product.description}
+                    </p>
+                  </Link>
+                </div>
               ))
           ) : (
             <>
