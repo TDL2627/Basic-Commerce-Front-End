@@ -60,6 +60,9 @@ export default function BulkProductAdd(props: any) {
       setCanUpload(false);
     }
   }, [products]);
+  useEffect(() => {
+    handleAddProduct()
+  }, []);
   return (
     <div className="w-full min-h-screen flex flex-col justify-center items-center bg-black text-white">
       <div className="fixed lg:top-0 top-16 bg-black w-screen text-center py-4">
