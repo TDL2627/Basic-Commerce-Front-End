@@ -8,6 +8,7 @@ import BulkProductAdd from "@/app/components/addMultipleProducts";
 export default function Products() {
   const [products, setProducts] = useState<any[] | null>(null);
   const [showModal, setShowModal] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,20 +28,40 @@ export default function Products() {
     setShowModal("");
   };
 
+  const totalPages = Math.ceil((products?.length || 0) / 6);
+
+  const handlePagination = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const renderPagination = () => {
+    const pages = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(
+        <button
+          key={i}
+          onClick={() => handlePagination(i)}
+          className={`${
+            currentPage === i ? "bg-gray-700 text-white" : "text-gray-700"
+          } py-2 px-4 mr-2 rounded`}
+        >
+          {i}
+        </button>
+      );
+    }
+    return pages;
+  };
+
+  const startIndex = (currentPage - 1) * 6;
+  const endIndex = startIndex + 6;
+
+
   return (
     <>
       <div className="w-full min-h-screen flex flex-col justify-center items-center bg-black text-white relative">
         <div className="fixed top-0 py-2 gap-2 bg-black w-screen flex flex-col justify-center items-center z-50">
           <h1 className="text-5xl">Products</h1>
           <div className="ml-4">
-            <button
-              onClick={() => {
-                setShowModal("single");
-              }}
-              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mr-4"
-            >
-              Add Product
-            </button>
             <button
               onClick={() => {
                 setShowModal("multi");
@@ -54,30 +75,34 @@ export default function Products() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8 overflow-y-auto z-0 mx-4 lg:max-h-[500px] py-20 lg:py-5">
           {products ? (
-            products.map((product: any, index: number) => (
-              <Link
-                href={`/pages/product/${product.id}`}
-                key={index}
-                className="p-4 bg-gray-800 rounded-lg"
-              >
-                <p>
-                  <strong>Product ID:</strong> {product.id}
-                </p>
-                <p>
-                  <strong>Name:</strong> {product.name}
-                </p>
-                <p>
-                  <strong>Price:</strong> {product.price}
-                </p>
-                <p>
-                  <strong>Description:</strong> {product.description}
-                </p>
-              </Link>
-            ))
+            products
+              .slice(startIndex, endIndex)
+              .map((product: any, index: number) => (
+                <Link
+                  href={`/pages/product/${product.id}`}
+                  key={index}
+                  className="p-4 bg-gray-800 rounded-lg"
+                >
+                  <p>
+                    <strong>Product ID:</strong> {product.id}
+                  </p>
+                  <p>
+                    <strong>Name:</strong> {product.name}
+                  </p>
+                  <p>
+                    <strong>Price:</strong> R{product.price}
+                  </p>
+                  <p>
+                    <strong>Description:</strong> {product.description}
+                  </p>
+                </Link>
+              ))
           ) : (
             <p>Loading...</p>
           )}
         </div>
+
+        <div className="flex mt-4">{renderPagination()}</div>
       </div>
       {showModal !== "" && (
         <div className="fixed  inset-0  bg-black flex justify-center  z-50">
