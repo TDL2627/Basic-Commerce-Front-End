@@ -54,7 +54,7 @@ export default function Products({ params }: { params: { id: string } }) {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:5000/product/${productId}`,
+        `https://basic-commerce-back-end.vercel.app/product/${productId}`,
         formData
       );
       setProduct(formData);
