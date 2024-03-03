@@ -11,9 +11,10 @@ const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(true);
-  const {cart, setCart}= useStore()
+  const { cart, setCart } = useStore();
 
-  const userEmail = typeof window !== 'undefined' ? localStorage.getItem("email") : "";
+  const userEmail =
+    typeof window !== "undefined" ? localStorage.getItem("email") : "";
   useEffect(() => {
     if (userEmail !== "admin@gmail.com") {
       setIsAdmin(false);
@@ -21,7 +22,6 @@ const Navbar = () => {
       setIsAdmin(true);
     }
   }, [userEmail]);
-
 
   useEffect(() => {
     const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -73,7 +73,7 @@ const Navbar = () => {
                   </button>
                 </div>
                 {/* Desktop menu */}
-                <div className="hidden md:flex md:items-center md:space-x-4">
+                <div className="hidden lg:flex md:items-center md:space-x-4">
                   <Link
                     href="/pages/products"
                     className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
@@ -119,29 +119,46 @@ const Navbar = () => {
 
             {/* Mobile menu */}
             <div
-              className={`md:hidden ${isOpen ? "" : "hidden"}`}
+              className={`lg:hidden ${isOpen ? "" : "hidden"}`}
               id="mobile-menu"
             >
-              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a
-                  href="#"
-                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 grid">
+                <Link
+                  href="/pages/products"
+                  className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  Link 1
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+                  Products
+                </Link>
+                <Link
+                  href="/pages/orders"
+                  className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  Link 2
-                </a>
+                  Orders
+                </Link>
+                {isAdmin ? (
+                  <Link
+                    href="/pages/customers"
+                    className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+                  >
+                    Customers
+                  </Link>
+                ) : (
+                  <>
+                    <Link
+                      href="/pages/cart"
+                      className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+                      >
+                      Cart {cart?.length > 0 && `(${cart.length})`}
+                    </Link>
+                  </>
+                )}
                 <p
                   onClick={() => {
                     localStorage.clear();
                     router.push("/");
                   }}
                   className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-                >
+                  >
                   Logout
                 </p>
               </div>
