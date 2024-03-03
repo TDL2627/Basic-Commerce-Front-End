@@ -35,7 +35,10 @@ export default function AddProduct(props: any) {
   return (
     <div className="w-full min-h-screen  flex flex-col justify-center items-center bg-black text-white">
       <h1 className="text-5xl mb-4">Add Product</h1>
-      <form onSubmit={handleSubmit} className="p-4 bg-gray-800 rounded-lg text-center">
+      <form
+        onSubmit={handleSubmit}
+        className="p-4 bg-gray-800 rounded-lg text-center"
+      >
         <input
           type="text"
           name="name"
@@ -55,7 +58,7 @@ export default function AddProduct(props: any) {
           className="mb-2 block w-full p-2 rounded bg-gray-900 text-white"
         />
         <textarea
-             required
+          required
           name="description"
           value={formData.description}
           onChange={handleChange}
