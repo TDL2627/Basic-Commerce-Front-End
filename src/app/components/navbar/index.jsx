@@ -4,14 +4,16 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useStore } from "@/app/stateManager";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(true);
-  const [cart, setCart] = useState([]);
-  const userEmail = localStorage.getItem("email") || "";
+  const {cart, setCart}= useStore()
+
+  const userEmail = typeof window !== 'undefined' ? localStorage.getItem("email") : "";
   useEffect(() => {
     if (userEmail !== "admin@gmail.com") {
       setIsAdmin(false);
@@ -20,11 +22,11 @@ const Navbar = () => {
     }
   }, [userEmail]);
 
-//   const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-//   useEffect(() => {
-//     setCart(localCart);
-//   }, [localCart]);
+  useEffect(() => {
+    const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    setCart(localCart);
+  }, []);
 
   return (
     <>

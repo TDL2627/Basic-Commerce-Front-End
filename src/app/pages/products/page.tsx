@@ -5,6 +5,8 @@ import axios from "axios";
 import AddProduct from "@/app/components/addProduct";
 import BulkProductAdd from "@/app/components/addMultipleProducts";
 import Spinner from "@/app/components/spinner";
+import { useStore } from "@/app/stateManager";
+
 
 export default function Products() {
   const [products, setProducts] = useState<any[] | null>(null);
@@ -14,7 +16,7 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [isAdmin, setIsAdmin] = useState(true);
-
+ const {setCart}= useStore()
   useEffect(() => {
     const userEmail = localStorage.getItem("email");
     if (userEmail !== "admin@gmail.com") {
@@ -110,6 +112,7 @@ export default function Products() {
     const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
     cartItems.push(product);
     localStorage.setItem("cart", JSON.stringify(cartItems));
+    setCart(cartItems);
   };
   return (
     <>
