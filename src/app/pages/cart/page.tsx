@@ -3,10 +3,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Spinner from "@/app/components/spinner";
 import { useStore } from "@/app/stateManager";
+import { db } from "@/app/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
+
 export default function Cart() {
   const { cart, setCart } = useStore();
   const [totalPrice, setTotalPrice] = useState(0);
-  const [payNow, setPayNow] = useState(true); 
+  const [payNow, setPayNow] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let total = 0;
@@ -19,11 +23,37 @@ export default function Cart() {
 
   const handleCheckout = async () => {
     try {
-      const response = await axios.post("/api/checkout", { cart });
+      setLoading(true);
+      const userEmail =
+        typeof window !== "undefined" ? localStorage.getItem("email") : "";
+      const q = query(
+        collection(db, "customers"),
+        where("email", "==", userEmail)
+      );
+      const snapshot = await getDocs(q);
+      let customerId = "";
+      snapshot.forEach((doc: any) => {
+        customerId = doc.id;
+      });
+
+      let cartIds: any = [];
+      cart.forEach((item: any) => {
+        cartIds.push(item.id);
+      });
+
+      const response = await axios.post(
+        "https://basic-commerce-back-end.vercel.app/order",
+        { paid: payNow, customerId, products: cartIds, total: totalPrice }
+      );
       setCart([]);
       localStorage.setItem("cart", JSON.stringify([]));
-      console.log("Checkout successful:", response.data);
+      setLoading(false);
+      alert("Order Created!");
+
+      console.log(":", response.data);
     } catch (error) {
+      setLoading(false);
+
       console.error("Error during checkout:", error);
     }
   };
@@ -67,28 +97,30 @@ export default function Cart() {
           )}
 
           {cart.length > 0 && (
-            <p className="text-center mt-4">Total: R{totalPrice}</p>
-          )}
-          <div className="lg:flex items-center">
-          <label htmlFor="payNow" className="mr-2">
-            Pay Now:
-          </label>
-          <input
-            id="payNow"
-            type="checkbox"
-            checked={payNow}
-            onChange={(e) => setPayNow(e.target.checked)}
-            className="form-checkbox h-5 w-5 text-blue-600"
-          />
+            <>
+              <p className="text-center mt-4">Total: R{totalPrice}</p>
 
-          <button
-            onClick={handleCheckout}
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4 block mx-auto"
-          >
-            Checkout
-          </button>
-          </div>
-         
+              <div className="flex items-center">
+                <label htmlFor="payNow" className="mr-2">
+                  Pay Now:
+                </label>
+                <input
+                  id="payNow"
+                  type="checkbox"
+                  checked={payNow}
+                  onChange={(e) => setPayNow(e.target.checked)}
+                  className="form-checkbox h-5 w-5 text-blue-600"
+                />
+
+                <button
+                  onClick={handleCheckout}
+                  className="bg-green-500 w-[150px] hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4 block mx-auto"
+                >
+                  {loading == true ? <Spinner /> : <> Checkout</>}
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>

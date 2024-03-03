@@ -45,6 +45,7 @@ export default function Orders() {
         Orders
       </h2>
       <div className="w-full min-h-screen flex flex-col justify-center items-center bg-black text-white">
+      {loading == false && (
         <input
           type="text"
           placeholder="Search by Order ID"
@@ -52,7 +53,7 @@ export default function Orders() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="bg-gray-800 text-white py-2 px-4 rounded"
         />
-
+      )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  overflow-y-auto z-0 mx-4 lg:max-h-[500px] py-10 lg:py-5">
           {filteredOrders.length > 0 ? (
             filteredOrders

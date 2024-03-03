@@ -7,7 +7,6 @@ import BulkProductAdd from "@/app/components/addMultipleProducts";
 import Spinner from "@/app/components/spinner";
 import { useStore } from "@/app/stateManager";
 
-
 export default function Products() {
   const [products, setProducts] = useState<any[] | null>(null);
   const [showModal, setShowModal] = useState("");
@@ -16,12 +15,12 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [isAdmin, setIsAdmin] = useState(true);
- const {setCart}= useStore()
+  const { setCart } = useStore();
   useEffect(() => {
     const userEmail = localStorage.getItem("email");
     if (userEmail !== "admin@gmail.com") {
       setIsAdmin(false);
-    }else {
+    } else {
       setIsAdmin(true);
     }
   }, []);
@@ -113,6 +112,7 @@ export default function Products() {
     cartItems.push(product);
     localStorage.setItem("cart", JSON.stringify(cartItems));
     setCart(cartItems);
+    alert("Product added to cart");
   };
   return (
     <>
@@ -120,37 +120,40 @@ export default function Products() {
         Products
       </h2>
       <div className="w-full min-h-screen flex flex-col justify-center items-center bg-black text-white relative">
-        <div className="lg:flex ">
-          <input
-            type="text"
-            placeholder="Search Name"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="bg-gray-800 h-[40px] text-white py-2 px-4 mb-2 rounded"
-          />
-          {isAdmin && (
-            <>
-              <div className="flex lg:ml-4">
-                <button
-                  onClick={() => {
-                    setShowModal("multi");
-                  }}
-                  className="bg-green-500 h-[40px] hover:bg-green-700 text-white py-2 px-4 rounded"
-                >
-                  Add Products
-                </button>
-                {selectedProducts.length > 0 && (
+        {loading == false && (
+          <div className="lg:flex w-full px-2 justify-center items-center">
+            <input
+              type="text"
+              placeholder="Search Name"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="bg-gray-800 h-[40px]  text-white py-2 px-4 mb-2 lg:mb-0 rounded"
+            />
+            {isAdmin && (
+              <>
+                <div className="flex lg:ml-4">
                   <button
-                    onClick={handleDelete}
-                    className="bg-red-500 h-[40px] hover:bg-red-700 text-white py-2 px-4 rounded ml-4"
+                    onClick={() => {
+                      setShowModal("multi");
+                    }}
+                    className="bg-green-500 h-[40px]  hover:bg-green-700 text-white py-2 px-4 rounded"
                   >
-                    Delete Selected
+                    Add Products
                   </button>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+                  {selectedProducts.length > 0 && (
+                    <button
+                      onClick={handleDelete}
+                      className="bg-red-500 h-[40px] hover:bg-red-700 text-white py-2 px-4 rounded ml-4"
+                    >
+                      Delete Selected
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4  overflow-y-auto z-0 mx-4 lg:max-h-[500px] pt-10 lg:py-5">
           {filteredProducts.length > 0 ? (
             filteredProducts
@@ -168,10 +171,23 @@ export default function Products() {
                         checked={selectedProducts.includes(product.id)}
                         className="h-5 absolute top-2 right-2 rounded-full"
                       />
+                      <Link href={`/pages/product/${product.id}`}>
+                        <p>
+                          <strong>Product ID:</strong> {product.id}
+                        </p>
+                        <p>
+                          <strong>Name:</strong> {product.name}
+                        </p>
+                        <p>
+                          <strong>Price:</strong> R{product.price}
+                        </p>
+                        <p>
+                          <strong>Description:</strong> {product.description}
+                        </p>
+                      </Link>
                     </>
                   )}
-
-                  <Link href={`/pages/product/${product.id}`} className="">
+                  <div>
                     <p>
                       <strong>Product ID:</strong> {product.id}
                     </p>
@@ -184,7 +200,8 @@ export default function Products() {
                     <p>
                       <strong>Description:</strong> {product.description}
                     </p>
-                  </Link>
+                  </div>
+
                   {!isAdmin && (
                     <button
                       onClick={() => addToCart(product)}

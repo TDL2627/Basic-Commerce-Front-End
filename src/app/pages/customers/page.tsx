@@ -46,6 +46,7 @@ export default function Customers() {
       </h2>
 
       <div className="w-full min-h-screen flex flex-col justify-center items-center bg-black text-white">
+      {loading == false && (
         <input
           type="text"
           placeholder="Search by name"
@@ -53,7 +54,7 @@ export default function Customers() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="bg-gray-800 text-white py-2 px-4 rounded"
         />
-
+      )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8 overflow-y-auto z-0 mx-4 lg:max-h-[500px] py-20 lg:py-5">
           {filteredCustomers.length > 0 ? (
             filteredCustomers

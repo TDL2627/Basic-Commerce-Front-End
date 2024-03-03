@@ -13,10 +13,10 @@ const firebaseConfig = {
   };
 
 // Initialize Firebase
-let app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const provider = new EmailAuthProvider();
-const db = getFirestore(app);
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+const db: any = getFirestore(app);
 const auth = getAuth(app);
+const provider = new EmailAuthProvider();
 
-export { provider, auth };
-export default db;
+export { db, auth, provider };
+export default app;

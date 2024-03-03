@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Spinner from "../spinner";
 
 export default function BulkProductAdd(props: any) {
   const { closeModal } = props;
   const [products, setProducts] = useState<any>([]);
   const [canUpload, setCanUpload] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: any, index: any) => {
     const { name, value } = e.target;
@@ -25,23 +27,29 @@ export default function BulkProductAdd(props: any) {
 
   const handleUpload = async () => {
     try {
-
-      if(products.length == 1){
+      setLoading(true);
+      if (products.length == 1) {
         await axios.post(
           "https://basic-commerce-back-end.vercel.app/product",
           products[0]
         );
-      }else{
-        await axios.post("https://basic-commerce-back-end.vercel.app/products", {
-          products,
-        });
+      } else {
+        await axios.post(
+          "https://basic-commerce-back-end.vercel.app/products",
+          {
+            products,
+          }
+        );
       }
-      
+      setLoading(false);
+
       window.location.reload();
       closeModal();
 
       console.log("Bulk products added successfully!");
     } catch (error) {
+      setLoading(false);
+
       console.error("Error adding bulk products:", error);
     }
   };
@@ -61,7 +69,7 @@ export default function BulkProductAdd(props: any) {
     }
   }, [products]);
   useEffect(() => {
-    handleAddProduct()
+    handleAddProduct();
   }, []);
   return (
     <div className="w-full min-h-screen flex flex-col justify-center items-center bg-black text-white">
@@ -114,18 +122,25 @@ export default function BulkProductAdd(props: any) {
       <div className="lg:flex fixed bottom-0 w-full left-0 right-0 text-center gap-4 justify-center py-4 ">
         <button
           onClick={handleAddProduct}
-          className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded lg:my-0 my-4"
+          className="bg-blue-500 w-[200px] hover:bg-blue-700 text-white py-2 px-4 rounded lg:my-0 my-4"
         >
           Add Another Product
         </button>
         <button
           disabled={canUpload == false}
           onClick={handleUpload}
-          className={`bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded  ${
+          className={`bg-green-500 w-[200px] hover:bg-green-700 text-white py-2 px-4 rounded  ${
             canUpload == false ? "cursor-not-allowed" : "cursor-pointer"
           }`}
         >
-          Upload Products
+          {loading == true ? (
+            <Spinner />
+          ) : (
+            <>
+              {" "}
+             Upload Products
+            </>
+          )}
         </button>
       </div>
     </div>
