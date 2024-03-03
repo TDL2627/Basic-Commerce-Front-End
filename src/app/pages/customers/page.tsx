@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Spinner from "@/app/components/spinner";
 export default function Customers() {
   const [customers, setCustomers] = useState<any[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -57,20 +58,20 @@ export default function Customers() {
             .map((customer: any, index: number) => (
               <div key={index} className="p-4 bg-gray-800 rounded-lg">
                 <p>
-                  <strong>Order ID:</strong> {customer.id}
+                  <strong>Customer ID:</strong> {customer.id}
                 </p>
                 <p>
                   <strong>Name:</strong> {customer.name}
                 </p>
                 <p>
-                  <strong>Email:</strong> {customer.customerId}
+                  <strong>Email:</strong> {customer.email}
                 </p>
               </div>
             ))
         ) : (
           <>
             {loading == true ? (
-              <>Loading...</>
+             <Spinner/>
             ) : (
               <>
                 {" "}

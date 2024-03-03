@@ -4,6 +4,7 @@ import Link from "next/link";
 import axios from "axios";
 import AddProduct from "@/app/components/addProduct";
 import BulkProductAdd from "@/app/components/addMultipleProducts";
+import Spinner from "@/app/components/spinner";
 
 export default function Products() {
   const [products, setProducts] = useState<any[] | null>(null);
@@ -165,7 +166,9 @@ export default function Products() {
           ) : (
             <>
               {loading == true ? (
-                <>Loading...</>
+                <>
+                  <Spinner />
+                </>
               ) : (
                 <>
                   {" "}
