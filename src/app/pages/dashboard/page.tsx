@@ -36,9 +36,9 @@ export default function Dashboard() {
 
   return (
     <>
-      <h1 className="text-5xl bg-black text-white text-center py-4">
+      <h2 className="lg:text-5xl text-3xl bg-black text-white text-center py-4">
         Dashboard
-      </h1>
+      </h2>
       <div className=" w-full min-h-screen flex flex-col justify-center items-center bg-black text-white">
         {loading == true ? (
           <>

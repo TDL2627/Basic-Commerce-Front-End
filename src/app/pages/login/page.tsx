@@ -25,9 +25,11 @@ export default function Login() {
         setLoading(false);
         if (email == "admin@gmail.com") {
           router.push("/pages/dashboard");
+          
         }else{
           router.push("/pages/products");
         }
+
       })
       .catch((error: any) => {
         console.error(error);
