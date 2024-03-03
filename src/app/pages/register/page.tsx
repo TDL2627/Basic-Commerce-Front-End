@@ -30,7 +30,8 @@ export default function Register() {
           }
         );
         const user = userCredential.user;
-        console.log(user, "aye");
+        const uid = user.uid;
+        localStorage.setItem("userId", uid);
         if (email == "admin@gmail.com") {
           router.push("/pages/dashboard");
         }else{

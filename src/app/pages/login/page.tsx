@@ -20,7 +20,8 @@ export default function Login() {
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
         const user = userCredential.user;
-        console.log(user, "aye");
+        const uid = user.uid;
+        localStorage.setItem("userId", uid);
         setLoading(false);
         if (email == "admin@gmail.com") {
           router.push("/pages/dashboard");
