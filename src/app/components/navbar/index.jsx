@@ -80,21 +80,31 @@ const Navbar = () => {
                   >
                     Products
                   </Link>
-                  <Link
+                
+                  {isAdmin ? (
+                    <>
+                    
+                    <Link
                     href="/pages/orders"
                     className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                   >
                     Orders
                   </Link>
-                  {isAdmin ? (
                     <Link
                       href="/pages/customers"
                       className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                     >
                       Customers
                     </Link>
+                    </>
                   ) : (
                     <>
+                         <Link
+                    href="/pages/my-orders"
+                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Orders
+                  </Link>
                       <Link
                         href="/pages/cart"
                         className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
