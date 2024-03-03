@@ -20,14 +20,13 @@ export default function Login() {
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
         const user = userCredential.user;
-        const uid = user.uid;
-        localStorage.setItem("userId", uid);
+        const userEmail: any = user.email;
+        localStorage.setItem("email", userEmail);
         setLoading(false);
         if (email == "admin@gmail.com") {
           router.push("/pages/dashboard");
         }else{
           router.push("/pages/products");
-
         }
       })
       .catch((error: any) => {

@@ -13,6 +13,14 @@ export default function Products() {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [isAdmin, setIsAdmin] = useState(true);
+
+  useEffect(() => {
+    const userEmail = localStorage.getItem("email");
+    if (userEmail !== "admin@gmail.com") {
+      setIsAdmin(false);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,42 +104,50 @@ export default function Products() {
       setSelectedProducts([]);
     }
   };
-
+  const addToCart = (product: any) => {
+    const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
+    cartItems.push(product);
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+  };
   return (
     <>
       <div className="w-full min-h-screen flex flex-col justify-center items-center bg-black text-white relative">
         <div className="fixed top-0 py-2 gap-2 bg-black w-screen flex flex-col justify-center items-center z-50">
           <h1 className="text-5xl">Products</h1>
-          <div className="lg:flex">
+          <div className="lg:flex ">
             <input
               type="text"
               placeholder="Search Name"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-gray-800 text-white py-2 px-4 rounded"
+              className="bg-gray-800 h-[40px] text-white py-2 px-4 mb-2 rounded"
             />
-            <div className="ml-4">
-              <button
-                onClick={() => {
-                  setShowModal("multi");
-                }}
-                className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded"
-              >
-                Add Products
-              </button>
-              {selectedProducts.length > 0 && (
-                <button
-                  onClick={handleDelete}
-                  className="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded ml-4"
-                >
-                  Delete Selected
-                </button>
-              )}
-            </div>
+            {isAdmin && (
+              <>
+                <div className="flex lg:ml-4">
+                  <button
+                    onClick={() => {
+                      setShowModal("multi");
+                    }}
+                    className="bg-green-500 h-[40px] hover:bg-green-700 text-white py-2 px-4 rounded"
+                  >
+                    Add Products
+                  </button>
+                  {selectedProducts.length > 0 && (
+                    <button
+                      onClick={handleDelete}
+                      className="bg-red-500 h-[40px] hover:bg-red-700 text-white py-2 px-4 rounded ml-4"
+                    >
+                      Delete Selected
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8 overflow-y-auto z-0 mx-4 lg:max-h-[500px] py-20 lg:py-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8 overflow-y-auto z-0 mx-4 lg:max-h-[500px] pt-32 lg:py-5">
           {filteredProducts.length > 0 ? (
             filteredProducts
               .slice(startIndex, endIndex)
@@ -140,12 +156,16 @@ export default function Products() {
                   key={index}
                   className="p-4 bg-gray-800 rounded-lg pt-8 relative"
                 >
-                  <input
-                    type="checkbox"
-                    onChange={() => handleCheckboxChange(product.id)}
-                    checked={selectedProducts.includes(product.id)}
-                    className="h-5 absolute top-2 right-2 rounded-full"
-                  />
+                  {isAdmin && (
+                    <>
+                      <input
+                        type="checkbox"
+                        onChange={() => handleCheckboxChange(product.id)}
+                        checked={selectedProducts.includes(product.id)}
+                        className="h-5 absolute top-2 right-2 rounded-full"
+                      />
+                    </>
+                  )}
 
                   <Link href={`/pages/product/${product.id}`} className="">
                     <p>
@@ -161,6 +181,14 @@ export default function Products() {
                       <strong>Description:</strong> {product.description}
                     </p>
                   </Link>
+                  {!isAdmin && (
+                    <button
+                      onClick={() => addToCart(product)}
+                      className="bg-green-500 w-full text-white py-2 px-4 mt-4 rounded"
+                    >
+                      Add to Cart
+                    </button>
+                  )}
                 </div>
               ))
           ) : (
