@@ -100,18 +100,19 @@ export default function Cart() {
             <>
               <p className="text-center mt-4">Total: R{totalPrice}</p>
 
-              <div className="flex items-center">
-                <label htmlFor="payNow" className="mr-2">
-                  Pay Now:
-                </label>
-                <input
-                  id="payNow"
-                  type="checkbox"
-                  checked={payNow}
-                  onChange={(e) => setPayNow(e.target.checked)}
-                  className="form-checkbox h-5 w-5 text-blue-600"
-                />
-
+              <div className="flex items-center gap-4">
+                <div className="flex items-center">
+                  <label htmlFor="payNow" className="mr-2">
+                    Pay Now:
+                  </label>
+                  <input
+                    id="payNow"
+                    type="checkbox"
+                    checked={payNow}
+                    onChange={(e) => setPayNow(e.target.checked)}
+                    className="form-checkbox h-5 w-5 text-blue-600"
+                  />
+                </div>
                 <button
                   onClick={handleCheckout}
                   className="bg-green-500 w-[150px] hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4 block mx-auto"
